@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath("."))
 
 import numpy as np
+from Affine import AffineToLinear as alt
 
 #Import aus Repo
 from subspace_clustering.cluster.selfrepresentation import ElasticNetSubspaceClustering
@@ -18,3 +19,8 @@ X = np.array([[1.0, -1.0, 0.0, 0.0, 0.0,  0.0, 0.0],
 model = ElasticNetSubspaceClustering(n_clusters=3,algorithm='lasso_lars',gamma=50).fit(X.T)
 print(model.labels_)
 # this should give you array([1, 1, 0, 0, 2, 2, 2]) or a permutation of these labels
+
+affine_model = alt.makeLinear(X)
+norm_affine_model = alt.normalize(affine_model)
+model_affine = ElasticNetSubspaceClustering(n_clusters=3,algorithm='lasso_lars',gamma=50).fit(norm_affine_model.T)
+print(model_affine.labels_)
