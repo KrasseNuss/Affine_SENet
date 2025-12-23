@@ -1,0 +1,22 @@
+# Python-spezifisch
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+venv/
+ENV/
+venv-spams/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# VS Code & Editoren
+.vscode/
+.idea/
+*.swp
+
+# Windows-Systemdateien
+Thumbs.db
+desktop.ini
