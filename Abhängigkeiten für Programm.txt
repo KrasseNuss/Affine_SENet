@@ -1,2 +1,5 @@
 python 3.8
 conda install -c conda-forge "python-utils<3.0.0" "progressbar2<4.0.0"
+
+Umgebung für Programm unter WSL Ubuntu:
+conda activate spams_env
