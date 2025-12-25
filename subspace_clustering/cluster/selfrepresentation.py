@@ -187,6 +187,10 @@ def active_support_elastic_net(X, y, alpha, tau=1.0, algorithm='spams', support_
     
     c = np.zeros(n_samples)
     c[supp] = cs
+    affine_error = np.abs(np.sum(c) - 1)
+    print("\nAffine Constraint Fehler: ",affine_error)
+    affine_score = 1.0 / (1.0 + np.abs(np.sum(c) - 1))
+    print("Affine Constraint Score: ",affine_score)
     return c
 
   
