@@ -1,5 +1,5 @@
 from scipy.optimize import linear_sum_assignment
-from sklearn.metrics.cluster import supervised
+from sklearn.metrics.cluster import _supervised as supervised
 
 import numpy as np
 
