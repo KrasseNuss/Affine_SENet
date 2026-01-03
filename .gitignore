@@ -20,3 +20,6 @@ venv-spams/
 # Windows-Systemdateien
 Thumbs.db
 desktop.ini
+
+#Dateien
+*.csv
