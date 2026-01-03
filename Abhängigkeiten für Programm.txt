@@ -3,3 +3,12 @@ conda install -c conda-forge "python-utils<3.0.0" "progressbar2<4.0.0"
 
 Umgebung für Programm unter WSL Ubuntu:
 conda activate spams_env
+
+Für SENet:
+python main.py --dataset=MNIST --gamma=50 --chunk_size=2000 --n_neighbors=10 --non_zeros=10 --affinity='nearest_neighbor'
+
+
+    """ row_norms = np.sqrt(C_sparse.multiply(C_sparse).sum(axis=1)).A1
+    valid = row_norms > 0
+    C_sparse = C_sparse[valid]
+    labels = labels[valid] """
