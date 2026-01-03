@@ -17,6 +17,9 @@ import argparse
 import random
 from tqdm import tqdm
 import os
+import sys
+sys.path.append(os.path.abspath("."))
+from Affine import AffineToLinear as alt
 import csv
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -267,6 +270,12 @@ if __name__ == "__main__":
             full_samples = np.load(f)
         with open('datasets/CIFAR10-MCR2/cifar10-labels.npy', 'rb') as f:
             full_labels = np.load(f)
+    elif args.dataset in ["CSV"]:
+        #Neue Option für csv hinzufügen
+        #Funktion für affine Daten aus Affine.py verwenden
+        full_samples = np.loadtxt("subspace_cluster.csv", delimiter=",", dtype=np.float64)
+        full_labels = np.loadtxt("subspace_lables.csv", delimiter=",", dtype=np.float64)
+        #pass
     else:
         raise Exception("Only MNIST, FashionMNIST and EMNIST are currently supported.")
     
