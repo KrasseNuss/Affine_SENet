@@ -107,6 +107,9 @@ def generate_subspacedata(n=0, d=0, mu_clu=False, subspaces=None):
             for j in range(0, len(subspace_cluster[0])):
                 if subspace_cluster[i][j] == 0:
                     subspace_cluster[i][j]= np.random.uniform(-100, 100)
+        
+        np.savetxt("subspace_cluster.csv", subspace_cluster, delimiter=",")
+        np.savetxt("subspace_lables.csv", subspace_lables, delimiter=",")
         return subspace_cluster, subspace_lables
 
 
