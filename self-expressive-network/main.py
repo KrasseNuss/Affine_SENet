@@ -19,7 +19,7 @@ from tqdm import tqdm
 import os
 import sys
 sys.path.append(os.path.abspath("."))
-from Affine import AffineToLinear as alt
+#from Affine import AffineToLinear as alt
 import csv
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -119,19 +119,21 @@ def get_sparse_rep(senet, data, batch_size=10, chunk_size=100, non_zeros=1000):
     N, D = data.shape
     non_zeros = min(N, non_zeros)
     C = torch.empty([batch_size, N])
-    if (N % batch_size != 0):
-        raise Exception("batch_size should be a factor of dataset size.")
-    if (N % chunk_size != 0):
-        raise Exception("chunk_size should be a factor of dataset size.")
+    """ if (N % batch_size != 0):
+        raise Exception("batch_size should be a factor of dataset size.") """
+    """ if (N % chunk_size != 0):
+        raise Exception("chunk_size should be a factor of dataset size.") """
 
     val = []
     indicies = []
     with torch.no_grad():
         senet.eval()
-        for i in range(data.shape[0] // batch_size):
+        for i in range(0, data.shape[0], batch_size):
+            batch = data[i:i+batch_size]
             chunk = data[i * batch_size:(i + 1) * batch_size].cuda()
             q = senet.query_embedding(chunk)
-            for j in range(data.shape[0] // chunk_size):
+            for j in range(0, data.shape[0], chunk_size):
+                batch = data[j:j+chunk_size]
                 chunk_samples = data[j * chunk_size: (j + 1) * chunk_size].cuda()
                 k = senet.key_embedding(chunk_samples)   
                 temp = senet.get_coeff(q, k)
@@ -194,6 +196,16 @@ def same_seeds(seed):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
+def point_labels_from_dimension_labels(L):
+    # L shape: (n, d)
+    labels = []
+    for i in range(L.shape[0]):
+        vals, counts = np.unique(L[i][L[i] > 0], return_counts=True)
+        if len(vals) == 0:
+            labels.append(-1)  # reiner Noise-Punkt
+        else:
+            labels.append(vals[np.argmax(counts)])
+    return np.array(labels)
 
 if __name__ == "__main__": 
     parser = argparse.ArgumentParser()
@@ -201,7 +213,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_subspaces', type=int, default=10)
     parser.add_argument('--gamma', type=float, default=200.0)
     parser.add_argument('--lmbd', type=float, default=0.9)
-    parser.add_argument('--hid_dims', type=int, default=[1024, 1024, 1024])
+    parser.add_argument('--hid_dims', type=int, nargs='+', default=[1024, 1024, 1024])
     parser.add_argument('--out_dims', type=int, default=1024)
     parser.add_argument('--total_iters', type=int, default=100000)
     parser.add_argument('--save_iters', type=int, default=200000)
@@ -241,6 +253,13 @@ if __name__ == "__main__":
         args.__setattr__('spectral_dim', 10)
         args.__setattr__('mean_subtract', False)
         args.__setattr__('affinity', 'symmetric')
+    elif args.dataset == 'CSV':
+        args.__setattr__('gamma', 100.0)
+        args.__setattr__('num_subspaces', 4)
+        args.__setattr__('spectral_dim', 4)
+        args.__setattr__('mean_subtract', False)
+        args.__setattr__('chunk_size', 200)
+        args.__setattr__('lr_min', 1e-3)
     else:
         raise Exception("Only MNIST, FashionMNIST, EMNIST and CIFAR10 are currently supported.")
 
@@ -273,8 +292,11 @@ if __name__ == "__main__":
     elif args.dataset in ["CSV"]:
         #Neue Option für csv hinzufügen
         #Funktion für affine Daten aus Affine.py verwenden
-        full_samples = np.loadtxt("subspace_cluster.csv", delimiter=",", dtype=np.float64)
-        full_labels = np.loadtxt("subspace_lables.csv", delimiter=",", dtype=np.float64)
+        full_samples = np.loadtxt("/mnt/d/Xaver Köppl/Uni/Bachelorarbeit/git/SubCluGen/subspace_cluster.csv", delimiter=",", dtype=np.float64)
+        full_labels_raw = np.loadtxt("/mnt/d/Xaver Köppl/Uni/Bachelorarbeit/git/SubCluGen/subspace_lables.csv", delimiter=",", dtype=np.float64)
+        full_labels = point_labels_from_dimension_labels(full_labels_raw)
+        full_labels = full_labels.astype(np.int64)
+        full_labels -= full_labels.min()
         #pass
     else:
         raise Exception("Only MNIST, FashionMNIST and EMNIST are currently supported.")
@@ -290,7 +312,12 @@ if __name__ == "__main__":
     writer.writerow(["N", "ACC", "NMI", "ARI"])
 
     global_steps = 0
-    for N in [200, 500, 1000, 2000, 5000, 10000, 20000]:
+    if args.dataset == 'CSV':
+        N_list =[full_samples.shape[0]]
+    else:
+        N_list = [200, 500, 1000, 2000, 5000, 10000, 20000]
+
+    for N in N_list:
         sampled_idx = np.random.choice(full_samples.shape[0], N, replace=False)
         samples, labels = full_samples[sampled_idx], full_labels[sampled_idx]
         block_size = min(N, 10000)
@@ -304,8 +331,9 @@ if __name__ == "__main__":
 
         data = torch.from_numpy(samples).float()
         data = utils.p_normalize(data)
-
+        
         n_iter_per_epoch = samples.shape[0] // args.batch_size
+        n_iter_per_epoch = max(n_iter_per_epoch, 1)
         n_step_per_iter = round(all_samples // block_size)
         n_epochs = args.total_iters // n_iter_per_epoch
         
