@@ -23,3 +23,7 @@ desktop.ini
 
 #Dateien
 *.csv
+
+#Ordner
+CSV_result/
+MNIST_result/
