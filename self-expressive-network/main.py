@@ -358,20 +358,26 @@ if __name__ == "__main__":
                 
                 rec_batch = torch.zeros_like(batch).cuda()
                 reg = torch.zeros([1]).cuda()
+                aff = torch.zeros([1]).cuda()
                 for j in range(n_step_per_iter):
                     block = data[j * block_size: (j + 1) * block_size].cuda()
                     k_block = senet.key_embedding(block)
-                    c = senet.get_coeff(q_batch, k_block)
+                    c = senet.get_coeff(q_batch, k_block) #Koeffizientenmatrix C
+                    row_sum = torch.sum(c, dim=1)
+                    aff = aff + torch.mean((row_sum - 1.0) ** 2) #Affinitätsbedingung
                     rec_batch = rec_batch + c.mm(block)
                     reg = reg + regularizer(c, args.lmbd)
                 
                 diag_c = senet.thres((q_batch * k_batch).sum(dim=1, keepdim=True)) * senet.shrink
                 rec_batch = rec_batch - diag_c * batch
                 reg = reg - regularizer(diag_c, args.lmbd)
+                aff = aff - torch.mean((diag_c.squeeze() - 1.0) ** 2) #Diagonalkorrektur
                 
                 rec_loss = torch.sum(torch.pow(batch - rec_batch, 2))
-                loss = (0.5 * args.gamma * rec_loss + reg) / args.batch_size
-
+                #loss = (0.5 * args.gamma * rec_loss + reg) / args.batch_size #original
+                mu = 1.0
+                loss = (0.5 * args.gamma * rec_loss + mu * aff) / args.batch_size #modifiziert für Affinität
+                
                 optimizer.zero_grad()
                 loss.backward()
                 nn.utils.clip_grad_norm_(senet.parameters(), 0.001)
