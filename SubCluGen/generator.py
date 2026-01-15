@@ -122,21 +122,33 @@ def make_subspaceblob(sub_n, sub_d, c, std):
 
 def random_subspaces(n, d, mu_clu):
     subspaces = []
-    number_random_clusters = random.randint(1, int(math.sqrt(math.sqrt(n*d))))
-    for x in range(number_random_clusters):
-        sub_n = random.randint(0.1*n, int(int(n*0.8) / number_random_clusters))
-        sub_d = random.randint(0.1*d, int(int(d*0.6) / number_random_clusters))
-        c = random.randint(1, int((sub_d / 2)))
-        std = random.random()
-        subspace = [sub_n, sub_d, c, round(std, 2)]
-        subspaces.append(subspace)
-    print("Subspaces are: "+ str(subspaces))
+
+    max_clusters = max(1, int(np.sqrt(np.sqrt(n * d))))
+    number_random_clusters = random.randint(1, max_clusters)
+
+    for _ in range(number_random_clusters):
+
+        sub_n_min = max(1, int(0.05 * n))
+        sub_n_max = max(sub_n_min, int(0.8 * n / number_random_clusters))
+
+        sub_d_min = max(1, int(0.1 * d))
+        sub_d_max = max(sub_d_min, int(0.6 * d))
+
+        sub_n = random.randint(sub_n_min, sub_n_max)
+        sub_d = random.randint(sub_d_min, sub_d_max)
+
+        c = random.randint(1, max(1, sub_d // 2))
+        std = round(random.uniform(0.1, 1.0), 2)
+
+        subspaces.append([sub_n, sub_d, c, std])
+
+    print("Subspaces are:", subspaces)
     return generate_subspacedata(n, d, mu_clu, subspaces)
 
 
 # TEST ----------------------------------------------------------------------------------------------------------------
-A, lables = generate_subspacedata(10, 10, False, [[2, 4, 1, 1.0], [3, 6, 2, 1.0], [1, 5, 1, 0.4], [4, 9, 1, 0.6]])
-#A, lables = generate_subspacedata(30, 30, True)
+#A, lables = generate_subspacedata(200, 10, False, [[2, 4, 1, 1.0], [3, 6, 2, 1.0], [1, 5, 1, 0.4], [4, 9, 1, 0.6]])
+A, lables = generate_subspacedata(10000, 2, True)
 #A, lables = generate_subspacedata()
 
 print(A)
