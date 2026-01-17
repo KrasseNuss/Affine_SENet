@@ -148,7 +148,7 @@ def random_subspaces(n, d, mu_clu):
 
 # TEST ----------------------------------------------------------------------------------------------------------------
 #A, lables = generate_subspacedata(200, 10, False, [[2, 4, 1, 1.0], [3, 6, 2, 1.0], [1, 5, 1, 0.4], [4, 9, 1, 0.6]])
-A, lables = generate_subspacedata(10000, 2, True)
+A, lables = generate_subspacedata(1000, 5, True)
 #A, lables = generate_subspacedata()
 
 print(A)
