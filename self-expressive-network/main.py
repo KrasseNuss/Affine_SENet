@@ -19,7 +19,7 @@ from tqdm import tqdm
 import os
 import sys
 sys.path.append(os.path.abspath("."))
-#from Affine import AffineToLinear as alt
+from Affine import AffineToLinear as alt
 import csv
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -130,17 +130,22 @@ def get_sparse_rep(senet, data, batch_size=10, chunk_size=100, non_zeros=1000):
         senet.eval()
         for i in range(0, data.shape[0], batch_size):
             batch = data[i:i+batch_size]
-            chunk = data[i * batch_size:(i + 1) * batch_size].cuda()
+            chunk = data[i:i + batch_size].cuda()
             q = senet.query_embedding(chunk)
             for j in range(0, data.shape[0], chunk_size):
                 batch = data[j:j+chunk_size]
-                chunk_samples = data[j * chunk_size: (j + 1) * chunk_size].cuda()
+                start = j
+                end = min(j + chunk_size, N)
+
+                if start >= end:
+                    continue
+                chunk_samples = data[start:end].cuda()
                 k = senet.key_embedding(chunk_samples)   
                 temp = senet.get_coeff(q, k)
-                C[:, j * chunk_size:(j + 1) * chunk_size] = temp.cpu()
+                C[:, start:end] = temp.cpu()
 
-            rows = list(range(batch_size))
-            cols = [j + i * batch_size for j in rows]
+            cols = torch.arange(i, min(i + batch_size, N))
+            rows = torch.arange(len(cols))
             C[rows, cols] = 0.0
 
             _, index = torch.topk(torch.abs(C), dim=1, k=non_zeros)
@@ -293,13 +298,19 @@ if __name__ == "__main__":
         #Neue Option für csv hinzufügen
         #Funktion für affine Daten aus Affine.py verwenden
         full_samples = np.loadtxt("/mnt/d/Xaver Köppl/Uni/Bachelorarbeit/git/SubCluGen/subspace_cluster.csv", delimiter=",", dtype=np.float64)
+        print("full_samples.shape: ", full_samples.shape)
+        print(full_samples)
+        full_samples = alt.makeLinear(full_samples)
+        print("full_samples.shape: ", full_samples.shape)
+        print(full_samples)
         full_labels_raw = np.loadtxt("/mnt/d/Xaver Köppl/Uni/Bachelorarbeit/git/SubCluGen/subspace_lables.csv", delimiter=",", dtype=np.float64)
         full_labels = point_labels_from_dimension_labels(full_labels_raw)
         full_labels = full_labels.astype(np.int64)
-        full_labels -= full_labels.min()
+        full_labels -= full_labels.min()        
+        print("full_labels.shape: ", full_labels.shape)
         #pass
     else:
-        raise Exception("Only MNIST, FashionMNIST and EMNIST are currently supported.")
+        raise Exception("Only MNIST, FashionMNIST and EMNIST are currently supported. CSV option added for data.")
     
     if args.mean_subtract:
         print("Mean Subtraction")
