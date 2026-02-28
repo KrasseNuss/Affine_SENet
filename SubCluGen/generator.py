@@ -22,6 +22,7 @@ import numpy as np
 import math
 import random
 from sklearn.datasets import make_blobs
+import matplotlib.pyplot as plt
 
 # PARAMS --------------------------------------------------------------------------------------------------------------
 #subspace_cluster
@@ -145,11 +146,12 @@ def random_subspaces(n, d, mu_clu):
     print("Subspaces are:", subspaces)
     return generate_subspacedata(n, d, mu_clu, subspaces)
 
-
+#Automatisches Cluster generieren funktioniert nicht, da das nur noch Rauschen ist.
 # TEST ----------------------------------------------------------------------------------------------------------------
 #A, lables = generate_subspacedata(200, 10, False, [[2, 4, 1, 1.0], [3, 6, 2, 1.0], [1, 5, 1, 0.4], [4, 9, 1, 0.6]])
-A, lables = generate_subspacedata(1000, 5, True)
+A, lables = generate_subspacedata(200, 2, False, [[100, 1, 1, 1.0], [80, 1, 1, 0.9]])
 #A, lables = generate_subspacedata()
-
+plt.plot(A[:, 0], A[:, 1], 'o')
+plt.show()
 print(A)
 print(lables)
