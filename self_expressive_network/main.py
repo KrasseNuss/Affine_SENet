@@ -438,7 +438,8 @@ def run_experiments(args):
     result.close()
     return acc, nmi, ari
 
-if __name__ == "__main__": 
+#if __name__ == "__main__": 
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default="MNIST")
     parser.add_argument('--num_subspaces', type=int, default=10)
@@ -468,7 +469,7 @@ if __name__ == "__main__":
     best_score = -1
     best_config = None
     rs_param = 50 #Anzahl Random Search
-
+    start = time.perf_counter()
     for trial in range(rs_param):  # z.B. 30 Random Trials
 
         args = sample_args(base_args)
@@ -481,8 +482,10 @@ if __name__ == "__main__":
             best_score = ari
             best_config = vars(args)
 
+    testtime = time.perf_counter() - start
     print("Best config:", best_config)
     print("Best ARI:", best_score)
+    print("Total test time:", testtime)
 
     final_runs = 5
     results = []
@@ -495,7 +498,10 @@ if __name__ == "__main__":
         results.append((acc, nmi, ari))
 
     results = np.array(results)
+    finaltime = time.perf_counter() - start
     print("Final results:")
     print("ACC: {:.4f} ± {:.4f}".format(results[:, 0].mean(), results[:, 0].std()))
     print("NMI: {:.4f} ± {:.4f}".format(results[:, 1].mean(), results[:, 1].std()))
     print("ARI: {:.4f} ± {:.4f}".format(results[:, 2].mean(), results[:, 2].std()))
+    print("Total time for final runs: {:.2f} seconds".format(finaltime))
+    return results, finaltime
