@@ -1,6 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath("."))
+sys.path.append(os.path.abspath("./self_expressive_network"))
 from SSC import main as ssc_main
 from self_expressive_network.main import main as sen_main
 from SubCluGen.generator import generate_subspacedata
@@ -51,6 +52,10 @@ def new_dim_SUBSPACES(num):
     return new_subspaces
 
 def values(results):
+    if not results:
+        print("Warning: No results for this experiment.")
+        return (0, 0, 0, 0, 0, 0, 0, 0)
+
     results = np.array(results)
     mean_ari = results[:, 0].mean()
     std_ari = results[:, 0].std()
@@ -71,7 +76,7 @@ def run_experiment_N():
     ssc_results = []
     senet_results = []
     sub_list = []
-    generate_subspacedata(N=N_current, D=D, MU_CLU=MU_CLU, SUBSPACES=current_subspaces)
+    generate_subspacedata(int(N_current), int(D), bool(MU_CLU), current_subspaces)
     time.sleep(1)
     for i in range(10):
         try:
@@ -90,7 +95,7 @@ def run_experiment_N():
     for j in range(2, num_trials):
         N_current = N_values[j-1]
         current_subspaces = scale_SUBSPACES(current_subspaces, N_current)
-        generate_subspacedata(N=N_current, D=D, MU_CLU=MU_CLU, SUBSPACES=current_subspaces)
+        generate_subspacedata(int(N_current), int(D), bool(MU_CLU), current_subspaces)
         time.sleep(1)
         ssc_results = []
         senet_results = []
@@ -119,7 +124,7 @@ def run_experiment_D():
     senet_results_final = []
     ssc_results = []
     senet_results = []
-    generate_subspacedata(N=N, D=current_D, MU_CLU=MU_CLU, SUBSPACES=SUBSPACES)
+    generate_subspacedata(int(N), int(current_D), bool(MU_CLU), SUBSPACES)
     time.sleep(1)
     for i in range(10):
         try:
@@ -136,7 +141,7 @@ def run_experiment_D():
     senet_results_final.append((N, current_D, values(senet_results)))
     for j in range(2, num_trials):
         current_D = change_D(current_D)
-        generate_subspacedata(N=N, D=current_D, MU_CLU=MU_CLU, SUBSPACES=SUBSPACES)
+        generate_subspacedata(int(N), int(current_D), bool(MU_CLU), SUBSPACES)
         time.sleep(1)
         ssc_results = []
         senet_results = []
@@ -165,7 +170,7 @@ def run_experiment_SUB():
     ssc_results_final = []
     senet_results_final = []
     sub_list = []
-    generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
+    generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
     time.sleep(1)
     for i in range(10):
         try:
@@ -183,7 +188,7 @@ def run_experiment_SUB():
     sub_list.append(current_sub)
     for j in range(2, num_trials):
         current_sub = new_points_SUBSPACES(j)
-        generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
+        generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
         time.sleep(1)
         ssc_results = []
         senet_results = []
@@ -213,7 +218,7 @@ def run_experiment_SUB_DIM():
     ssc_results_final = []
     senet_results_final = []
     sub_list = []
-    generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
+    generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
     time.sleep(1)
     for i in range(10):
         try:
@@ -231,7 +236,7 @@ def run_experiment_SUB_DIM():
     sub_list.append(current_sub)
     for j in range(2, num_trials):
         current_sub = new_dim_SUBSPACES(j)
-        generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
+        generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
         time.sleep(1)
         ssc_results = []
         senet_results = []
