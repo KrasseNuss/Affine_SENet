@@ -152,7 +152,9 @@ def random_subspaces(n, d, mu_clu):
 #2D Cluster
 A, lables = generate_subspacedata(200, 2, False, [[100, 1, 1, 1.0], [80, 1, 1, 0.9]])
 #A, lables = generate_subspacedata()
-plt.plot(A[:, 0], A[:, 1], 'o')
-plt.show()
-print(A)
-print(lables)
+test = False
+if test:
+    plt.plot(A[:, 0], A[:, 1], 'o')
+    plt.show()
+    print(A)
+    print(lables)
