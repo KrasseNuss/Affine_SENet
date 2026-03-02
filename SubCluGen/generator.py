@@ -149,6 +149,7 @@ def random_subspaces(n, d, mu_clu):
 #Automatisches Cluster generieren funktioniert nicht, da das nur noch Rauschen ist.
 # TEST ----------------------------------------------------------------------------------------------------------------
 #A, lables = generate_subspacedata(200, 10, False, [[2, 4, 1, 1.0], [3, 6, 2, 1.0], [1, 5, 1, 0.4], [4, 9, 1, 0.6]])
+#2D Cluster
 A, lables = generate_subspacedata(200, 2, False, [[100, 1, 1, 1.0], [80, 1, 1, 0.9]])
 #A, lables = generate_subspacedata()
 plt.plot(A[:, 0], A[:, 1], 'o')
