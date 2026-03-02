@@ -78,7 +78,7 @@ def run_experiment_N():
     sub_list = []
     generate_subspacedata(int(N_current), int(D), bool(MU_CLU), current_subspaces)
     time.sleep(1)
-    for i in range(10):
+    for i in range(5):
         try:
             results_ssc, time_ssc = ssc_main()
             results_senet, time_senet = sen_main()
@@ -89,8 +89,10 @@ def run_experiment_N():
             continue
         ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-    ssc_results_final.append((N_current, D, values(ssc_results)))
-    senet_results_final.append((N_current, D, values(senet_results)))
+    mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+    mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+    ssc_results_final.append((N_current, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+    senet_results_final.append((N_current, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     sub_list.append(current_subspaces)
     for j in range(2, num_trials):
         N_current = N_values[j-1]
@@ -99,7 +101,7 @@ def run_experiment_N():
         time.sleep(1)
         ssc_results = []
         senet_results = []
-        for z in range(10):
+        for z in range(5):
             try:
                 results_ssc, time_ssc = ssc_main()
                 results_senet, time_senet = sen_main()
@@ -110,8 +112,10 @@ def run_experiment_N():
                 continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-        ssc_results_final.append((N_current, D, values(ssc_results)))
-        senet_results_final.append((N_current, D, values(senet_results)))
+        mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+        mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+        ssc_results_final.append((N_current, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+        senet_results_final.append((N_current, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
         sub_list.append(current_subspaces)
     np.savetxt("ssc_results_N.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_N.csv", senet_results_final, delimiter=",")
@@ -126,7 +130,7 @@ def run_experiment_D():
     senet_results = []
     generate_subspacedata(int(N), int(current_D), bool(MU_CLU), SUBSPACES)
     time.sleep(1)
-    for i in range(10):
+    for i in range(5):
         try:
             results_ssc, time_ssc = ssc_main()
             results_senet, time_senet = sen_main()
@@ -137,15 +141,17 @@ def run_experiment_D():
             continue
         ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-    ssc_results_final.append((N, current_D, values(ssc_results)))
-    senet_results_final.append((N, current_D, values(senet_results)))
+    mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+    mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+    ssc_results_final.append((N, current_D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+    senet_results_final.append((N, current_D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     for j in range(2, num_trials):
         current_D = change_D(current_D)
         generate_subspacedata(int(N), int(current_D), bool(MU_CLU), SUBSPACES)
         time.sleep(1)
         ssc_results = []
         senet_results = []
-        for z in range(10):
+        for z in range(5):
             try:
                 results_ssc, time_ssc = ssc_main()
                 results_senet, time_senet = sen_main()
@@ -156,8 +162,10 @@ def run_experiment_D():
                 continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-        ssc_results_final.append((N, current_D, values(ssc_results)))
-        senet_results_final.append((N, current_D, values(senet_results)))
+        mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+        mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+        ssc_results_final.append((N, current_D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+        senet_results_final.append((N, current_D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     np.savetxt("ssc_results_D.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_D.csv", senet_results_final, delimiter=",")
     np.savetxt("subspaces_D.txt", SUBSPACES, delimiter=",")
@@ -172,7 +180,7 @@ def run_experiment_SUB():
     sub_list = []
     generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
     time.sleep(1)
-    for i in range(10):
+    for i in range(5):
         try:
             results_ssc, time_ssc = ssc_main()
             results_senet, time_senet = sen_main()
@@ -182,9 +190,11 @@ def run_experiment_SUB():
                 log.write(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
             continue
         ssc_results.append([ results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
-        senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-    ssc_results_final.append((N, D, values(ssc_results)))
-    senet_results_final.append((N, D, values(senet_results)))
+        senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])    
+    mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+    mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+    ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+    senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     sub_list.append(current_sub)
     for j in range(2, num_trials):
         current_sub = new_points_SUBSPACES(j)
@@ -192,7 +202,7 @@ def run_experiment_SUB():
         time.sleep(1)
         ssc_results = []
         senet_results = []
-        for z in range(10):
+        for z in range(5):
             try:
                 results_ssc, time_ssc = ssc_main()
                 results_senet, time_senet = sen_main()
@@ -202,9 +212,11 @@ def run_experiment_SUB():
                     log.write(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
                 continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
-            senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-        ssc_results_final.append((N, D, values(ssc_results)))
-        senet_results_final.append((N, D, values(senet_results)))
+            senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])        
+        mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+        mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+        ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+        senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
         sub_list.append(current_sub)
     np.savetxt("ssc_results_SUBSPACES.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_SUBSPACES.csv", senet_results_final, delimiter=",")
@@ -220,7 +232,7 @@ def run_experiment_SUB_DIM():
     sub_list = []
     generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
     time.sleep(1)
-    for i in range(10):
+    for i in range(5):
         try:
             results_ssc, time_ssc = ssc_main()
             results_senet, time_senet = sen_main()
@@ -230,9 +242,11 @@ def run_experiment_SUB_DIM():
                 log.write(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
             continue
         ssc_results.append([ results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
-        senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-    ssc_results_final.append((N, D, values(ssc_results)))
-    senet_results_final.append((N, D, values(senet_results)))
+        senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])    
+    mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+    mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+    ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+    senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     sub_list.append(current_sub)
     for j in range(2, num_trials):
         current_sub = new_dim_SUBSPACES(j)
@@ -240,7 +254,7 @@ def run_experiment_SUB_DIM():
         time.sleep(1)
         ssc_results = []
         senet_results = []
-        for z in range(10):
+        for z in range(5):
             try:
                 results_ssc, time_ssc = ssc_main()
                 results_senet, time_senet = sen_main()
@@ -250,9 +264,11 @@ def run_experiment_SUB_DIM():
                     log.write(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
                 continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
-            senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
-        ssc_results_final.append((N, D, values(ssc_results)))
-        senet_results_final.append((N, D, values(senet_results)))
+            senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])        
+        mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc = values(ssc_results)
+        mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet = values(senet_results)
+        ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
+        senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
         sub_list.append(current_sub)
     np.savetxt("ssc_results_SUBSPACES_DIM.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_SUBSPACES_DIM.csv", senet_results_final, delimiter=",")

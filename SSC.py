@@ -56,7 +56,7 @@ def main():
     #print(cluster)
     affine_model = alt.makeLinear(cluster)
 
-    trial_num = 50
+    trial_num = 20
     best_score = -1
     best_gamma = None
     for trial in range(trial_num):
@@ -75,7 +75,7 @@ def main():
     print(f"Best ARI: {best_score}")
     print(f"Trial time: {trial_time:.2f} seconds")
 
-    final_run = 5
+    final_run = 1
     results = []
 
     for i in range(final_run):
@@ -84,12 +84,17 @@ def main():
         results.append((acc, nmi, ari))
 
     results = np.array(results)
+    ARI_mean = results[:, 0].mean()
+    NMI_mean = results[:, 1].mean()
+    ACC_mean = results[:, 2].mean()
+    final_metrics = (ARI_mean, NMI_mean, ACC_mean)
+
 
     endtime = time.perf_counter() - start
-    print("ARI: {:.4f} ± {:.4f}".format(results[:, 0].mean(), results[:, 0].std()))
-    print("NMI: {:.4f} ± {:.4f}".format(results[:, 1].mean(), results[:, 1].std()))
-    print("ACC: {:.4f} ± {:.4f}".format(results[:, 2].mean(), results[:, 2].std()))
+    print("ARI: {:.4f} ± {:.4f}".format(ARI_mean, results[:, 0].std()))
+    print("NMI: {:.4f} ± {:.4f}".format(NMI_mean, results[:, 1].std()))
+    print("ACC: {:.4f} ± {:.4f}".format(ACC_mean, results[:, 2].std()))
     print(f"Best gamma: {best_gamma}")
     print("Total time: {:.2f} seconds".format(endtime))
     print("\n")
-    return results, endtime
+    return final_metrics, endtime

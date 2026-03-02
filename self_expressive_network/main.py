@@ -468,7 +468,7 @@ def main():
 
     best_score = -1
     best_config = None
-    rs_param = 50 #Anzahl Random Search
+    rs_param = 20 #Anzahl Random Search
     start = time.perf_counter()
     for trial in range(rs_param):  # z.B. 30 Random Trials
 
@@ -487,7 +487,7 @@ def main():
     print("Best ARI:", best_score)
     print("Total test time:", testtime)
 
-    final_runs = 5
+    final_runs = 1
     results = []
 
     for i in range(final_runs):
@@ -498,10 +498,15 @@ def main():
         results.append((acc, nmi, ari))
 
     results = np.array(results)
+    ARI_mean = results[:, 2].mean()
+    NMI_mean = results[:, 1].mean()
+    ACC_mean = results[:, 0].mean()
+    final_metrics = (ARI_mean, NMI_mean, ACC_mean)
+
     finaltime = time.perf_counter() - start
     print("Final results:")
     print("ACC: {:.4f} ± {:.4f}".format(results[:, 0].mean(), results[:, 0].std()))
     print("NMI: {:.4f} ± {:.4f}".format(results[:, 1].mean(), results[:, 1].std()))
     print("ARI: {:.4f} ± {:.4f}".format(results[:, 2].mean(), results[:, 2].std()))
     print("Total time for final runs: {:.2f} seconds".format(finaltime))
-    return results, finaltime
+    return final_metrics, finaltime
