@@ -74,8 +74,14 @@ def run_experiment_N():
     generate_subspacedata(N=N_current, D=D, MU_CLU=MU_CLU, SUBSPACES=current_subspaces)
     time.sleep(1)
     for i in range(10):
-        results_ssc, time_ssc = ssc_main()
-        results_senet, time_senet = sen_main()
+        try:
+            results_ssc, time_ssc = ssc_main()
+            results_senet, time_senet = sen_main()
+        except Exception as e:
+            print(f"Error in run {i} with the Parameters N={N_current}, D={D}, Subspaces={current_subspaces}: {e}")
+            with open("error_log_N.txt", "a") as log:
+                log.write(f"Error in run {i} with the Parameters N={N_current}, D={D}, Subspaces={current_subspaces}: {str(e)}\n")
+            continue
         ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
     ssc_results_final.append((N_current, D, values(ssc_results)))
@@ -89,8 +95,14 @@ def run_experiment_N():
         ssc_results = []
         senet_results = []
         for z in range(10):
-            results_ssc, time_ssc = ssc_main()
-            results_senet, time_senet = sen_main()
+            try:
+                results_ssc, time_ssc = ssc_main()
+                results_senet, time_senet = sen_main()
+            except Exception as e:
+                print(f"Error in run {z} with the Parameters N={N_current}, D={D}, Subspaces={current_subspaces}: {e}")
+                with open("error_log_N.txt", "a") as log:
+                    log.write(f"Error in run {z} with the Parameters N={N_current}, D={D}, Subspaces={current_subspaces}: {str(e)}\n")
+                continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
         ssc_results_final.append((N_current, D, values(ssc_results)))
@@ -110,8 +122,14 @@ def run_experiment_D():
     generate_subspacedata(N=N, D=current_D, MU_CLU=MU_CLU, SUBSPACES=SUBSPACES)
     time.sleep(1)
     for i in range(10):
-        results_ssc, time_ssc = ssc_main()
-        results_senet, time_senet = sen_main()
+        try:
+            results_ssc, time_ssc = ssc_main()
+            results_senet, time_senet = sen_main()
+        except Exception as e:
+            print(f"Error in run {i} with the Parameters N={N}, D={current_D}, Subspaces={SUBSPACES}: {e}")
+            with open("error_log_D.txt", "a") as log:
+                log.write(f"Error in run {i} with the Parameters N={N}, D={current_D}, Subspaces={SUBSPACES}: {str(e)}\n")
+            continue
         ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
     ssc_results_final.append((N, current_D, values(ssc_results)))
@@ -123,8 +141,14 @@ def run_experiment_D():
         ssc_results = []
         senet_results = []
         for z in range(10):
-            results_ssc, time_ssc = ssc_main()
-            results_senet, time_senet = sen_main()
+            try:
+                results_ssc, time_ssc = ssc_main()
+                results_senet, time_senet = sen_main()
+            except Exception as e:
+                print(f"Error in run {z} with the Parameters N={N}, D={current_D}, Subspaces={SUBSPACES}: {e}")
+                with open("error_log_D.txt", "a") as log:
+                    log.write(f"Error in run {z} with the Parameters N={N}, D={current_D}, Subspaces={SUBSPACES}: {str(e)}\n")
+                continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
         ssc_results_final.append((N, current_D, values(ssc_results)))
@@ -144,8 +168,14 @@ def run_experiment_SUB():
     generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
     time.sleep(1)
     for i in range(10):
-        results_ssc, time_ssc = ssc_main()
-        results_senet, time_senet = sen_main()
+        try:
+            results_ssc, time_ssc = ssc_main()
+            results_senet, time_senet = sen_main()
+        except Exception as e:
+            print(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {e}")
+            with open("error_log_SUB.txt", "a") as log:
+                log.write(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
+            continue
         ssc_results.append([ results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
     ssc_results_final.append((N, D, values(ssc_results)))
@@ -158,8 +188,14 @@ def run_experiment_SUB():
         ssc_results = []
         senet_results = []
         for z in range(10):
-            results_ssc, time_ssc = ssc_main()
-            results_senet, time_senet = sen_main()
+            try:
+                results_ssc, time_ssc = ssc_main()
+                results_senet, time_senet = sen_main()
+            except Exception as e:
+                print(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {e}")
+                with open("error_log_SUB.txt", "a") as log:
+                    log.write(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
+                continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
         ssc_results_final.append((N, D, values(ssc_results)))
@@ -180,8 +216,14 @@ def run_experiment_SUB_DIM():
     generate_subspacedata(N=N, D=D, MU_CLU=MU_CLU, SUBSPACES=current_sub)
     time.sleep(1)
     for i in range(10):
-        results_ssc, time_ssc = ssc_main()
-        results_senet, time_senet = sen_main()
+        try:
+            results_ssc, time_ssc = ssc_main()
+            results_senet, time_senet = sen_main()
+        except Exception as e:
+            print(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {e}")
+            with open("error_log_SUB_DIM.txt", "a") as log:
+                log.write(f"Error in run {i} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
+            continue
         ssc_results.append([ results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
         senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
     ssc_results_final.append((N, D, values(ssc_results)))
@@ -194,8 +236,14 @@ def run_experiment_SUB_DIM():
         ssc_results = []
         senet_results = []
         for z in range(10):
-            results_ssc, time_ssc = ssc_main()
-            results_senet, time_senet = sen_main()
+            try:
+                results_ssc, time_ssc = ssc_main()
+                results_senet, time_senet = sen_main()
+            except Exception as e:
+                print(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {e}")
+                with open("error_log_SUB_DIM.txt", "a") as log:
+                    log.write(f"Error in run {z} with the Parameters N={N}, D={D}, Subspaces={current_sub}: {str(e)}\n")
+                continue
             ssc_results.append([results_ssc[0], results_ssc[1], results_ssc[2], time_ssc])
             senet_results.append([results_senet[0], results_senet[1], results_senet[2], time_senet])
         ssc_results_final.append((N, D, values(ssc_results)))
