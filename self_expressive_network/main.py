@@ -119,36 +119,39 @@ def regularizer(c, lmbd=1.0):
 def get_sparse_rep(senet, data, batch_size=10, chunk_size=100, non_zeros=1000):
     N, D = data.shape
     non_zeros = min(N, non_zeros)
-    C = torch.empty([batch_size, N])
-    """ if (N % batch_size != 0):
-        raise Exception("batch_size should be a factor of dataset size.") """
-    """ if (N % chunk_size != 0):
-        raise Exception("chunk_size should be a factor of dataset size.") """
-
+    
     val = []
     indicies = []
+    
     with torch.no_grad():
         senet.eval()
-        for i in range(0, data.shape[0], batch_size):
-            batch = data[i:i+batch_size]
-            chunk = data[i:i + batch_size].cuda()
+        # Verwende eine Range mit Schrittweite batch_size, um alle N Punkte zu erreichen
+        for i in range(0, N, batch_size):
+            # Berechne die tatsächliche Größe des aktuellen Batches (wichtig für den letzten!)
+            actual_batch_size = min(batch_size, N - i)
+            chunk = data[i : i + actual_batch_size].cuda()
+            
+            # C muss die Größe des aktuellen Batches haben
+            C = torch.empty([actual_batch_size, N])
+            
             q = senet.query_embedding(chunk)
-            for j in range(0, data.shape[0], chunk_size):
-                batch = data[j:j+chunk_size]
-                start = j
-                end = min(j + chunk_size, N)
-
-                if start >= end:
-                    continue
-                chunk_samples = data[start:end].cuda()
+            
+            # Innere Schleife für die Keys (Chunks)
+            for j in range(0, N, chunk_size):
+                actual_chunk_size = min(chunk_size, N - j)
+                chunk_samples = data[j : j + actual_chunk_size].cuda()
+                
                 k = senet.key_embedding(chunk_samples)   
                 temp = senet.get_coeff(q, k)
-                C[:, start:end] = temp.cpu()
+                C[:, j : j + actual_chunk_size] = temp.cpu()
 
-            cols = torch.arange(i, min(i + batch_size, N))
-            rows = torch.arange(len(cols))
-            C[rows, cols] = 0.0
+            # Diagonalelemente (Self-Expression) auf 0 setzen
+            for r in range(actual_batch_size):
+                global_idx = i + r
+                if global_idx < N:
+                    C[r, global_idx] = 0.0
 
+            # Top-K Auswahl
             _, index = torch.topk(torch.abs(C), dim=1, k=non_zeros)
             
             val.append(C.gather(1, index).reshape([-1]).cpu().data.numpy())
