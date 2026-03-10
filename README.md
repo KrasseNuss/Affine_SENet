@@ -8,7 +8,7 @@ This repository contains the implementation and experiments for the bachelor the
 
 ## Requirements
 All the requirements can be found in the **Tests.yml** file. It contains all packages and the Python version 3.8.20.
-The easiest way is to set up conda with the **Tests.yml** file. Then you have all necessary packages and the right python version. Installation guide for conda can be found [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
+The easiest way is to set up conda with the **Tests.yml** file. Then you have all necessary packages and the right python version. Installation guide for conda can be found [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
 ## Usage
 The Tests.py file contains the methods to run the experiments. If you used conda as mentioned above, you can install the environment with following command: **conda env create -f Tests.yml**. Then you can type **"conda activate spams_env"** to activate the environment. Afterwards you have to navigate to the source location of the **Tests.py** file and then you can type the command **python Tests.py**. This should start the experiments.
