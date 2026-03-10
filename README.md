@@ -20,3 +20,4 @@ The fix is simple. Add a parameter to the function **ssc_main()**. In the file *
 ### Example
 ssc_main(num_clusters) -> run_experiment(..., num_clusters=num_clusters) -> ElasticNetSubspaceClustering(n_clusters=num_clusters, ...)
 
+This should fix the mentioned problem.
