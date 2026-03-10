@@ -45,10 +45,10 @@ def new_points_SUBSPACES(num):
 
 def new_dim_SUBSPACES(num):
     global N, D
-    points = int(N // num)
+    points = int(N // 2)
     new_subspaces = []
-    for i in range(num):
-        new_subspaces.append([points, num, 1, 0.9])
+    new_subspaces.append([points, num, 1, 0.9])
+    new_subspaces.append([points, num, 1, 1.0])
     return new_subspaces
 
 def values(results):
@@ -119,7 +119,7 @@ def run_experiment_N():
         sub_list.append(current_subspaces)
     np.savetxt("ssc_results_N.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_N.csv", senet_results_final, delimiter=",")
-    np.savetxt("current_sub_N.txt", sub_list, delimiter=",")
+    #np.savetxt("current_sub_N.txt", sub_list, delimiter=",") Funktioniert leider nicht, da die Liste mehrdimensional ist
 
 def run_experiment_D():
     print("Testing with changing D:")
@@ -168,7 +168,7 @@ def run_experiment_D():
         senet_results_final.append((N, current_D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     np.savetxt("ssc_results_D.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_D.csv", senet_results_final, delimiter=",")
-    np.savetxt("subspaces_D.txt", SUBSPACES, delimiter=",")
+    #np.savetxt("subspaces_D.txt", SUBSPACES, delimiter=",") Funktioniert leider nicht, da die Liste mehrdimensional ist
 
 def run_experiment_SUB():
     print("Testing with changing the number of subspaces:")
@@ -196,7 +196,7 @@ def run_experiment_SUB():
     ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
     senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     sub_list.append(current_sub)
-    for j in range(2, num_trials):
+    for j in range(3, num_trials+1):
         current_sub = new_points_SUBSPACES(j)
         generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
         time.sleep(1)
@@ -220,7 +220,7 @@ def run_experiment_SUB():
         sub_list.append(current_sub)
     np.savetxt("ssc_results_SUBSPACES.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_SUBSPACES.csv", senet_results_final, delimiter=",")
-    np.savetxt("current_sub_SUBSPACES.txt", sub_list, delimiter=",")
+    #np.savetxt("current_sub_SUBSPACES.txt", sub_list, delimiter=",") Funktioniert leider nicht, da die Liste mehrdimensional ist
 
 def run_experiment_SUB_DIM():
     print("Testing with changing the dimensions of subspaces:")
@@ -248,7 +248,7 @@ def run_experiment_SUB_DIM():
     ssc_results_final.append((N, D, mean_ari_ssc, std_ari_ssc, mean_nmi_ssc, std_nmi_ssc, mean_acc_ssc, std_acc_ssc, mean_time_ssc, std_time_ssc))
     senet_results_final.append((N, D, mean_ari_senet, std_ari_senet, mean_nmi_senet, std_nmi_senet, mean_acc_senet, std_acc_senet, mean_time_senet, std_time_senet))
     sub_list.append(current_sub)
-    for j in range(2, num_trials):
+    for j in range(3, num_trials+1):
         current_sub = new_dim_SUBSPACES(j)
         generate_subspacedata(int(N), int(D), bool(MU_CLU), current_sub)
         time.sleep(1)
@@ -272,7 +272,7 @@ def run_experiment_SUB_DIM():
         sub_list.append(current_sub)
     np.savetxt("ssc_results_SUBSPACES_DIM.csv", ssc_results_final, delimiter=",")
     np.savetxt("senet_results_SUBSPACES_DIM.csv", senet_results_final, delimiter=",")
-    np.savetxt("current_sub_SUBSPACES_DIM.txt", sub_list, delimiter=",")
+    #np.savetxt("current_sub_SUBSPACES_DIM.txt", sub_list, delimiter=",") Funktioniert leider nicht, da die Liste mehrdimensional ist
 
 if __name__ == "__main__":
     #Changing of N
